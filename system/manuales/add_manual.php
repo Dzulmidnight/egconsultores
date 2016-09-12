@@ -44,8 +44,8 @@
 		$accion = 1;
 
 		if(!empty($_FILES['archivo']['name'])){
-			$ruta_img = "../archivos/manuales/";
-			$ruta_img = $ruta_img . basename( $_FILES['archivo']['name']); 
+			$ruta_img = "archivos/manuales/";
+			$ruta_img = $ruta_img.basename( $_FILES['archivo']['name']); 
 			if(move_uploaded_file($_FILES['archivo']['tmp_name'], $ruta_img)){ 
 				//echo "El archivo ". basename( $_FILES['archivo']['name']). " ha sido subido";
 			} /*else{
