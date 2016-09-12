@@ -35,6 +35,15 @@
 
 	mysql_select_db($database_eg_system, $eg_system);
 
+
+	/***** INICIAN VARIABLES DE BITACORA *****/
+	$idusuario = $_SESSION['idusuario'];
+	$fecha = time();
+	$identificador = "CLIENTE";
+	$accion = 1;
+
+	/***** TERMIAN VARIABLES DE BITACORA *****/
+
 	if(isset($_POST['agregar_cliente']) && $_POST['agregar_cliente'] == 1){
 		$query = sprintf("INSERT INTO cliente (empresa, rfc, cont_emp1, cont_emp2, direccion, cp, numero, colonia, ciudad, delegacion, telefono, fax, imss, clase, prima_riesgo, turnos, num_trabajador, actividad, primero_horario, primero_jornada, segundo_horario, segundo_jornada, tercero_horario, tercero_jornada, deptos, sindicato, inicio_actividades, c_cap_ad, vigencia, plan_cap, periodo, etapas, primera, segunda, tercera, cuarta, rep_trab1, rep_trab2, rep_trab3, rep_trab4, rep_trab5, rep_trab6, rep_pat1, rep_pat2, rep_pat3, rep_pat4, rep_pat5, rep_pat6, honorarios, pago_iva, total, honorarios_letra, inicio, final, campo1, campo2, idusuario) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", 
 			GetSQLValueString($_POST['empresa'], "text"),
@@ -96,14 +105,25 @@
 			GetSQLValueString($_POST['idusuario'], "int"));
 
 		  $insetar = mysql_query($query, $eg_system) or die(mysql_error());
+		  $idcliente = mysql_insert_id($eg_system);
+
+		  $insertSQL = sprintf("INSERT INTO bitacora(idusuario, identificador, accion, idcliente, fecha_registro) VALUES (%s, %s, %s, %s, %s)",
+		  	GetSQLValueString($idusuario, "int"),
+		  	GetSQLValueString($identificador, "text"),
+		  	GetSQLValueString($accion, "int"),
+		  	GetSQLValueString($idcliente, "int"),
+		  	GetSQLValueString($fecha, "int"));
+		  $insertar = mysql_query($insertSQL, $eg_system) or die(mysql_error());
+
+
+
 		  $mensaje = "Cliente Agregado Correctamente";
 
 	}
  ?>
 
 <div class="row">
-	<h3>Agregar Cliente(s)</h3>
-	<hr>
+
 	<?php 
 	if(isset($mensaje)){
 	?>
@@ -116,13 +136,13 @@
 	 ?>
 	 	 	
 
-	<div class="col-lg-4 visible-lg" style="padding:0px;">
-		<p>Listado Clientes</p>
+	<div class="col-lg-4 visible-lg">
+		<h3>Listado Clientes</h3>
 		<table class="table table-bordered table-condensed table-hover" style="font-size:11px;">
 			<thead>
 				<tr>
-					<th></th>
-					<th>Id</th>
+					
+					<th colspan="2">Id</th>
 					<th>Empresa</th>
 					<th>RFC</th>
 				</tr>
@@ -148,7 +168,8 @@
 			</tbody>
 		</table>
 	</div>
-	<div class="col-lg-8 col-md-12" style="padding:0px;">
+	<div class="col-lg-8 col-md-12" >
+		<h3>Agregar Cliente</h3>
 		<form action="" name="" method="POST" style="font-size:12px;">
 			<div class="col-lg-4 col-md-6 col-sm-12">
 				<label for="empresa">Empresa</label>
@@ -368,19 +389,19 @@
 			</div>
 			<div class="col-lg-4 col-md-6 col-sm-12">
 				<label for="campo1">Campo1</label>
-				<textarea id="campo1" name="campo1"></textarea>
+				<textarea id="campo1" name="campo1" class="form-control"></textarea>
 				
 			</div>
 			<div class="col-lg-4 col-md-6 col-sm-12">
 				<label for="campo2">Campo2</label>
-				<textarea id="campo2" name="campo2"></textarea>
+				<textarea id="campo2" name="campo2" class="form-control"></textarea>
 				
 			</div>
 			<div class="col-lg-12">
 				<hr>
 				<input type="hidden" class="form-control" id="idusuario" name="idusuario" value="<?php echo $_SESSION['idusuario']; ?>">
 				<input type="hidden" name="agregar_cliente" value="1">
-				<input style="width:200px;" class="btn btn-success" type="submit" value="Guardar">
+				<input style="width:200px;" class="btn btn-success form-control" type="submit" value="Agregar Cliente">
 			</div>
 		</form>
 	</div>

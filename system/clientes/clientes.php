@@ -20,7 +20,14 @@
 <div class="row">
 	<div class="col-lg-12">
 		<a class="<?php echo $clase1; ?>" href="?menu=clientes&listado">Listado Clientes</a>
-		<a class="<?php echo $clase2; ?>" href="?menu=clientes&add_cliente">Agregar Cliente</a>
+		<?php 
+		if($row_usuario['crear']){
+		?>
+			<a class="<?php echo $clase2; ?>" href="?menu=clientes&add_cliente">Agregar Cliente</a>
+		<?php
+		}
+		 ?>
+	
 		<?php 
 		if(isset($_GET['idcliente'])){
 		?>

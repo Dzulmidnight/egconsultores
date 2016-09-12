@@ -35,9 +35,15 @@
 
 	mysql_select_db($database_eg_system, $eg_system);
 
-
+	/***** INICIAN VARIABLES DE BITACORA *****/
 	$idusuario = $_SESSION['idusuario'];
 	$idcliente = $_GET['idcliente'];
+	$fecha = time();
+	$identificador = "CLIENTE";
+	$accion = 2;
+
+	/***** TERMIAN VARIABLES DE BITACORA *****/
+
 
 
 	if(isset($_POST['actualizar_cliente']) && $_POST['actualizar_cliente'] == 1){
@@ -102,6 +108,15 @@
 			GetSQLValueString($idcliente, "int"));
 
 		$actualizar = mysql_query($updateSQL, $eg_system) or die(mysql_error());
+
+		$insertSQL = sprintf("INSERT INTO bitacora (idusuario, identificador, accion, idcliente, fecha_registro) VALUES (%s, %s, %s, %s, %s)",
+			GetSQLValueString($idusuario, "int"),
+			GetSQLValueString($identificador, "text"),
+			GetSQLValueString($accion, "int"),
+			GetSQLValueString($idcliente, "int"),
+			GetSQLValueString($fecha, "int"));
+		$insertar = mysql_query($insertSQL,$eg_system) or die(mysql_error());
+		
 		$mensaje = "Cliente Actualizado Correctamente";
 
 
@@ -151,7 +166,7 @@
 		 ?>
 	</div>
 	 
-	<div class="col-lg-2 visible-lg" style="padding:0px;">
+	<div class="col-lg-2 visible-lg">
 		<p>Listado Documentos</p>
 		<!--<a href="?menu=clientes&idcliente=1&doc=correspondencia" class="btn btn-info form-control">Documento 1</a>-->
 
@@ -187,7 +202,7 @@
 		default:
 	
 			?>
-				<div class="col-lg-10 col-md-12" style="padding:0px;">
+				<div class="col-lg-10 col-md-12">
 					<form action="" name="" method="POST" style="font-size:12px;">
 						<div class="col-lg-4 col-md-6 col-sm-12">
 							<label for="empresa">Empresa</label>

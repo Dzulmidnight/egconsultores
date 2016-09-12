@@ -20,6 +20,26 @@ switch ($menu) {
 	case 'clientes':
 		include("clientes/clientes.php");
 		break;
+	case 'manuales':
+		include("manuales/manuales.php");
+		break;
+	case 'cotizaciones':
+		include("cotizaciones/cotizaciones.php");
+		break;
+	case 'servicios':
+		include("servicios/servicios.php");
+		break;
+	case 'facturas':
+		include("facturas/facturas.php");
+		break;
+	case 'bitacora':
+		include("bitacora.php");
+		break;
+
+
+
+
+
 	default:
 
 		break;

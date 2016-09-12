@@ -4,6 +4,38 @@
 	}
 	mysql_select_db($database_eg_system, $eg_system);
 
+if (!function_exists("GetSQLValueString")) {
+  function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
+  {
+    if (PHP_VERSION < 6) {
+      $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
+    }
+
+    $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
+
+    switch ($theType) {
+      case "text":
+        $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+        break;    
+      case "long":
+      case "int":
+        $theValue = ($theValue != "") ? intval($theValue) : "NULL";
+        break;
+      case "double":
+        $theValue = ($theValue != "") ? doubleval($theValue) : "NULL";
+        break;
+      case "date":
+        $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+        break;
+      case "defined":
+        $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
+        break;
+    }
+    return $theValue;
+  }
+}
+
+
 	if(isset($_POST['eliminar_usuario']) && $_POST['eliminar_usuario'] == 1){
 		$idusuario_eliminar = $_POST['idusuario'];
 		$query = "DELETE FROM usuario WHERE idusuario = $idusuario_eliminar";
@@ -17,8 +49,39 @@
 		$password_agregar = $_POST['password'];
 		$nombre_agregar = $_POST['nombre'];
 		$email_agregar = $_POST['email'];
+		if (isset($_POST['leer'])) {
+			$leer = $_POST['leer'];
+		} else {
+			$leer = 0;
+		}
+		if (isset($_POST['crear'])) {
+			$crear = $_POST['crear'];
+		} else {
+			$crear = 0;
+		}
+		if (isset($_POST['editar'])) {
+			$editar = $_POST['editar'];
+		} else {
+			$editar = 0;
+		}
+		if (isset($_POST['eliminar'])) {
+			$eliminar = $_POST['eliminar'];
+		} else {
+			$eliminar = 0;
+		}
 
-		$query = "INSERT INTO usuario(clase, username, password, nombre, email) VALUES('$clase_agregar', '$username_agregar', '$password_agregar', '$nombre_agregar', '$email_agregar')";
+		$query = sprintf("INSERT INTO usuario (clase, username, password, nombre, email, leer, crear, editar, eliminar) VALUES (%s, %s, %s, %s, %s, %s, s, %s, %s)",
+			GetSQLValueString($clase_agregar, "text"),
+			GetSQLValueString($username_agregar, "text"),
+			GetSQLValueString($password_agregar, "text"),
+			GetSQLValueString($nombre_agregar, "text"),
+			GetSQLValueString($email_agregar, "text"),
+			GetSQLValueString($leer, "int"),
+			GetSQLValueString($crear, "int"),
+			GetSQLValueString($editar, "int"),
+			GetSQLValueString($eliminar, "int"));
+
+		$query = "INSERT INTO usuario(clase, username, password, nombre, email, leer, crear, editar, eliminar) VALUES('$clase_agregar', '$username_agregar', '$password_agregar', '$nombre_agregar', '$email_agregar', $leer, $crear, $editar, $eliminar)";
 		$insertar = mysql_query($query,$eg_system) or die(mysql_error());
 		$mensaje = "Usuario Agregado Correctamente";
 
@@ -32,9 +95,43 @@
 		$password_actualizar = $_POST['password'];
 		$nombre_actualizar = $_POST['nombre'];
 		$email_actualizar = $_POST['email'];
-		$idusuario_actualizar = $_POST['idusuario2'];
+		if (isset($_POST['leer'])) {
+			$leer = $_POST['leer'];
+		} else {
+			$leer = 0;
+		}
+		if (isset($_POST['crear'])) {
+			$crear = $_POST['crear'];
+		} else {
+			$crear = 0;
+		}
+		if (isset($_POST['editar'])) {
+			$editar = $_POST['editar'];
+		} else {
+			$editar = 0;
+		}
+		if (isset($_POST['eliminar'])) {
+			$eliminar = $_POST['eliminar'];
+		} else {
+			$eliminar = 0;
+		}
 
-		$query = "UPDATE usuario SET clase = '$clase_actualizar', username = '$username_actualizar', password = '$password_actualizar', nombre = '$nombre_actualizar', email = '$email_actualizar' WHERE idusuario = $idusuario_actualizar";
+		$idusuario = $_POST['idusuario2'];
+
+		$query = sprintf("UPDATE usuario SET clase = %s, username = %s, password = %s, nombre = %s, email = %s, leer = %s, crear = %s, editar = %s, eliminar = %s WHERE idusuario = %s",
+			GetSQLValueString($clase_actualizar, "text"),
+			GetSQLValueString($username_actualizar, "text"),
+			GetSQLValueString($password_actualizar, "text"),
+			GetSQLValueString($nombre_actualizar, "text"),
+			GetSQLValueString($email_actualizar, "text"),
+			GetSQLValueString($leer, "int"),
+			GetSQLValueString($crear, "int"),
+			GetSQLValueString($editar, "int"),
+			GetSQLValueString($eliminar, "int"),
+			GetSQLValueString($idusuario, "int"));
+
+
+		//$query = "UPDATE usuario SET clase = '$clase_actualizar', username = '$username_actualizar', password = '$password_actualizar', nombre = '$nombre_actualizar', email = '$email_actualizar', leer = $leer, crear = $crear, editar = $editar, eliminar = $eliminar WHERE idusuario = $idusuario_actualizar";
 		$actualizar = mysql_query($query,$eg_system) or die(mysql_error());
 		$mensaje = "Datos Actualizados Correctamente";
 
@@ -46,7 +143,8 @@
 		$row_usuario2 = mysql_query($query,$eg_system) or die(mysql_error());
 
  ?>
-<h3>Listado de Usuarios | Total: <span style="color:#c0392b"><?php echo $total; ?></span></h3>
+<h3>Listado de Usuarios | Total: <span style="color:#c0392b"><?php echo $total; ?></span></h3> <?php if(isset($_GET['detalle'])){echo "<a class='btn btn-sm btn-success' href='?menu=usuarios'>Nuevo Usuario</a>"; }; ?>
+
 <?php 
 if(isset($mensaje)){
 ?>
@@ -61,12 +159,13 @@ if(isset($mensaje)){
 
 
  <div class="row">
-	<div class="col-lg-6">
+	<div class="col-md-7">
 		<table class="table table-bordered table-condensed" style="font-size:12px;">
 			<thead>
 				<tr class="alert alert-info">
 					<th>ID</th>
 					<th>Clase</th>
+					<th>Permisos</th>
 					<th>Username</th>
 					<th>Password</th>
 					<th>Nombre</th>
@@ -81,7 +180,23 @@ if(isset($mensaje)){
 					?>
 					<tr>
 						<td><?php echo $usuario['idusuario']; ?></td>	
-						<td><?php echo $usuario['clase']; ?></td>	
+						<td><?php echo $usuario['clase']; ?></td>
+						<td>
+							<?php 
+							if($usuario['leer']){
+								echo "<span class='btn btn-xs btn-default glyphicon glyphicon-eye-open' data-toggle='tooltip' title='Leer'></span>";
+							}
+							if($usuario['crear']){
+								echo "<span class='btn btn-xs btn-default glyphicon glyphicon-plus' data-toggle='tooltip' title='Agregar'></span>";
+							}
+							if($usuario['editar']){
+								echo "<span class='btn btn-xs btn-default glyphicon glyphicon-pencil' data-toggle='tooltip' title='Editar'></span>";
+							}
+							if($usuario['eliminar']){
+								echo "<span class='btn btn-xs btn-default glyphicon glyphicon-trash' data-toggle='tooltip' title='Eliminar'></span>";
+							}
+							 ?>
+						</td>
 						<td><?php echo $usuario['username']; ?></td>	
 						<td><?php echo $usuario['password']; ?></td>	
 						<td><?php echo $usuario['nombre']; ?></td>	
@@ -116,7 +231,7 @@ if(isset($mensaje)){
 	$detalle_usuario = mysql_fetch_assoc($consultar);
 	?>
 		<!---- INICIA DETALLE USUARIO ---->
-		<div class="col-md-6 alert alert-success">
+		<div class="col-md-5 alert alert-success">
 			<h4>Detalle Usuario</h4>
 			<form action="" method="POST">
 				<label for="clase">Clase</label>
@@ -125,6 +240,23 @@ if(isset($mensaje)){
 					<option value="adm" <?php if($detalle_usuario['clase'] == 'adm'){ echo 'selected'; } ?>>Adm</option>
 					<option value="user" <?php if($detalle_usuario['clase'] == 'user'){ echo 'selected'; } ?>>User</option>
 				</select>
+
+				<div class="checkbox">
+					<p><b>Permisos de Usuario</b></p>
+					<label style="margin-right:2em;">
+						<input type="checkbox" name="leer" value="1" <?php if($detalle_usuario['leer']){ echo "checked"; } ?>> LEER
+					</label>
+					<label style="margin-right:2em;">
+						<input type="checkbox" name="crear" value="1" <?php if($detalle_usuario['crear']){ echo "checked"; } ?>> AGREGAR
+					</label>
+					<label style="margin-right:2em;">
+						<input type="checkbox" name="editar" value="1" <?php if($detalle_usuario['editar']){ echo "checked"; } ?>> EDITAR
+					</label>
+					<label style="margin-right:2em;">
+						<input type="checkbox" name="eliminar" value="1" <?php if($detalle_usuario['eliminar']){ echo "checked"; } ?>> ELIMINAR
+					</label>
+				</div>
+
 				<div class="form-group has-success has-feedback">
 					<label for="username">* Username</label>
 					<input type="text" class="form-control" id="username" name="username" value="<?php echo $detalle_usuario['username']; ?>" required>
@@ -142,7 +274,7 @@ if(isset($mensaje)){
 				</div>
 				<div class="form-group has-success has-feedback">
 					<label for="email">* Email</label>
-					<input type="text" class="form-control" id="email" name="email" value="<?php echo $detalle_usuario['email']; ?>" required>
+					<input type="email" class="form-control" id="email" name="email" value="<?php echo $detalle_usuario['email']; ?>" required>
 					<span class="glyphicon glyphicon-envelope form-control-feedback" aria-hidden="true"></span>
 				</div>
 				<input type="hidden" class="form-control" name="actualizar_usuario2" value="1">
@@ -156,7 +288,7 @@ if(isset($mensaje)){
 	}else{
 	?>
 		<!---- INICIA AGREGAR USUARIO ---->
-		<div class="col-md-6">
+		<div class="col-md-5">
 			<h4>Agregar Usuario</h4>
 			<form action="" method="POST">
 				<label for="clase">Clase</label>
@@ -165,6 +297,24 @@ if(isset($mensaje)){
 					<option value="adm">Adm</option>
 					<option value="user">User</option>
 				</select>
+					
+				<div class="checkbox">
+					<p><b>Permisos de Usuario</b></p>
+					<label style="margin-right:2em;">
+						<input type="checkbox" name="leer" value="1"> LEER
+					</label>
+					<label style="margin-right:2em;">
+						<input type="checkbox" name="crear" value="1"> AGREGAR
+					</label>
+					<label style="margin-right:2em;">
+						<input type="checkbox" name="editar" value="1"> EDITAR
+					</label>
+					<label style="margin-right:2em;">
+						<input type="checkbox" name="eliminar" value="1"> ELIMINAR
+					</label>
+				</div>
+
+
 				<div class="form-group has-success has-feedback">
 					<label for="username">* Username</label>
 					<input type="text" class="form-control" id="username" name="username" required>
@@ -182,7 +332,7 @@ if(isset($mensaje)){
 				</div>
 				<div class="form-group has-success has-feedback">
 					<label for="email">* Email</label>
-					<input type="text" class="form-control" id="email" name="email" required>
+					<input type="email" class="form-control" id="email" name="email" required>
 					<span class="glyphicon glyphicon-envelope form-control-feedback" aria-hidden="true"></span>
 				</div>
 				<input type="hidden" class="form-control" name="agregar_usuario2" value="1">

@@ -1,19 +1,41 @@
 <?php
-
-// *** Validate request to login to this site.
 	include("../connections/sesion.php");
   include("../connections/eg_system.php");
 
   mysql_select_db($database_eg_system, $eg_system);
 
-  $queryClase = "SELECT clase FROM usuario WHERE idusuario = $_SESSION[idusuario]";
-  $ejecutar = mysql_query($queryClase,$eg_system) or die(mysql_error());
-  $clase_usuario = mysql_fetch_assoc($ejecutar);
-  $tipo_usuario = $clase_usuario['clase'];
+if (!function_exists("GetSQLValueString")) {
+  function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
+  {
+    if (PHP_VERSION < 6) {
+      $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
+    }
 
-  $sesion_idusuario = $_SESSION['idusuario'];
-  $sesion_clase = $_SESSION['clase'];
-  $sesion_username = $_SESSION['username'];
+    $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
+
+    switch ($theType) {
+      case "text":
+        $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+        break;    
+      case "long":
+      case "int":
+        $theValue = ($theValue != "") ? intval($theValue) : "NULL";
+        break;
+      case "double":
+        $theValue = ($theValue != "") ? doubleval($theValue) : "NULL";
+        break;
+      case "date":
+        $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+        break;
+      case "defined":
+        $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
+        break;
+    }
+    return $theValue;
+  }
+}
+  
+
 ?>
 
 <html lang="es">
@@ -73,13 +95,12 @@ $(function () {
       $menu = "";
     }
 
-    $query = "SELECT idcliente FROM cliente";
-    $ejecutar = mysql_query($query,$eg_system) or die(mysql_error());
-    $total_cliente = mysql_num_rows($ejecutar);
+    $row_cliente = mysql_query("SELECT * FROM cliente",$eg_system) or die(mysql_error());
+    $total_cliente = mysql_num_rows($row_cliente);
 
-    $query = "SELECT idusuario FROM usuario";
-    $ejecutar = mysql_query($query,$eg_system) or die(mysql_error());
-    $total_usuario = mysql_num_rows($ejecutar);
+    $query_usuario = mysql_query("SELECT clase, leer, crear, editar, eliminar FROM usuario WHERE idusuario = ".$_SESSION['idusuario']."");
+    $row_usuario = mysql_fetch_assoc($query_usuario);
+
     ?>
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -96,18 +117,30 @@ $(function () {
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="visible-xs nav navbar-nav navbar-right">
-            <li><p style="color:white">Usuario: <strong style="color:#c0392b"><?php echo $sesion_username;?></strong></p></li>
-            <li <?php if(empty($menu)){ echo 'class="active"';} ?>><a href="index.php">Inicio</span></a></li>
-            <li <?php if($menu == "clientes"){ echo 'class="active"';} ?>><a href="?menu=clientes&listado">Clientes <span class="badge"><?php echo $total_cliente; ?></span></a></li>
+            <li>
+              <p style="color:white">Usuario: <strong style="color:#c0392b"><?php echo $_SESSION['username'];?></strong></p>
+            </li>
+            <li <?php if(empty($menu)){ echo 'class="active"';} ?>>
+              <a href="index.php">Inicio</span></a>
+            </li>
+            <li <?php if($menu == "clientes"){ echo 'class="active"';} ?>>
+              <a href="?menu=clientes&listado">Clientes <span class="badge"><?php echo $total_cliente; ?></span></a>
+            </li>
+
             <?php 
-            if($sesion_clase == 'adm'){
+            if($row_usuario['clase'] == 'adm'){
             ?>
               <li <?php if($menu == "usuarios"){ echo 'class="active"';}?> ><a href="?menu=usuarios">Usuarios <span class="badge"><?php echo $total_usuario; ?></span></a></li>
             <?php
             }
              ?>
-            <li <?php if($menu == "cuenta"){ echo 'class="active"';} ?>><a href="?menu=cuenta">Mi Cuenta</a></li>
-            <li><a href="../connections/salir.php">Cerrar Sesión</a></li>
+
+            <li <?php if($menu == "cuenta"){ echo 'class="active"';} ?>>
+              <a href="?menu=cuenta">Mi Cuenta</a>
+            </li>
+            <li>
+              <a href="../connections/salir.php">Cerrar Sesión</a>
+            </li>
 
           </ul>
           <!--<form class="navbar-form navbar-right">
@@ -125,13 +158,37 @@ $(function () {
         <!------------------------ INICIA SECCIÓN MENÚ OPCIONES ------------------------------>
         <div class="col-sm-2 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
-            <li><p>Usuario: <strong style="color:#c0392b"><?php echo $sesion_username;?></strong></p></li>
+            <li><a href="#" class="disabled"><p>Usuario: <strong style="color:#c0392b"><?php echo $_SESSION['username'];?></strong></p></a></li>
+
             <li <?php if(empty($menu)){ echo 'class="active"';} ?>><a href="index.php">Inicio</span></a></li>
+
             <li <?php if($menu == "clientes"){ echo 'class="active"';} ?>><a href="?menu=clientes&listado">Clientes <span class="badge"><?php echo $total_cliente; ?></span></a></li>
+
+            <li <?php if($menu == "manuales"){ echo 'class="active"';}?>>
+              <a href="?menu=manuales&listado">Manuales</a>
+            </li>
+            <li <?php if($menu == "cotizaciones"){ echo 'class="active"';}?>>
+              <a href="?menu=cotizaciones">Cotizaciónes</a>
+            </li>
+            <li <?php if($menu == "facturas"){ echo 'class="active"';}?>>
+              <a href="?menu=facturas">Facturas</a>
+            </li>
+            <li <?php if($menu == "servicios"){ echo 'class="active"';}?>>
+              <a href="?menu=servicios">Servicios</a>
+            </li>
             <?php 
-            if($tipo_usuario == 'adm'){
+            if($row_usuario['clase'] == 'adm'){
             ?>
-              <li <?php if($menu == "usuarios"){ echo 'class="active"';}?> ><a href="?menu=usuarios">Usuarios <span class="badge"><?php echo $total_usuario; ?></span></a></li>
+              <li <?php if($menu == "bitacora"){ echo 'class="active"';}?>>
+                <a href="?menu=bitacora">Bitacora</a>
+              </li>
+            <?php
+            } 
+             ?>
+            <?php 
+            if($row_usuario['clase'] == 'adm'){
+            ?>
+              <li <?php if($menu == "usuarios"){ echo 'class="active"';}?> ><a href="?menu=usuarios">Usuarios</a></li>
             <?php
             }
              ?>
@@ -143,7 +200,7 @@ $(function () {
         <!------------------------ TERMINA SECCIÓN MENÚ OPCIONES ------------------------------>
 
         <!------------------------ INICIA SECCIÓN MENÚ SISTEMA ------------------------------>
-        <div class="col-sm-10 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="col-sm-10 col-sm-offset-3 col-md-10 col-md-offset-2 main" style="padding:10px;">
           <?php 
             include("selector.php");
            ?>
