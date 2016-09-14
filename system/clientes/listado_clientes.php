@@ -64,6 +64,8 @@
 	$consultar = mysql_query($row_cliente,$eg_system);
 	$total = mysql_num_rows($consultar);
 
+
+
 ?>
 
 
@@ -86,15 +88,15 @@ if(isset($mensaje)){
  			<thead>
 				<tr class="alert alert-info">
 					<th class="text-center">Nº</th>
-					<th class="text-center">ID</th>
+					<th>ID</th>
 					<th class="text-center">Empresa</th>
 					<th class="text-center">RFC</th>
 					<th class="text-center hidden-xs">Cont Emp1</th>
 					<th class="text-center hidden-xs">Teléfono</th>
-					<th class="text-center hidden-xs">Dirección</th>
-					<th class="text-center hidden-xs">Numero</th>
 					<th class="text-center hidden-xs">Colonia</th>
 					<th class="text-center">Ciudad</th>
+					<th class="text-center hidden-xs">Cotizaciones</th>
+					<th class="text-center hidden-xs">Facturas</th>
 				</tr>
  			</thead>
  			<tbody>
@@ -109,10 +111,29 @@ if(isset($mensaje)){
  					<td><?php echo $cliente['rfc']; ?></td>
  					<td><?php echo $cliente['cont_emp1']; ?></td>
  					<td><?php echo $cliente['telefono']; ?></td>
- 					<td><?php echo $cliente['direccion']; ?></td>
- 					<td><?php echo $cliente['numero']; ?></td>
  					<td><?php echo $cliente['colonia']; ?></td>
  					<td><?php echo $cliente['ciudad']; ?></td>
+ 					<td>
+ 						<a href="?menu=cotizaciones&add_cotizacion&cliente=<?php echo $cliente['idcliente']; ?>" data-toggle="tooltip" title="Agregar Cotización">
+ 							<span class="btn btn-xs btn-default glyphicon glyphicon-plus" aria-hidden="true"></span>
+ 						</a>
+					<?php 
+						$row_cotizaciones = mysql_query("SELECT idcotizacion FROM cotizacion WHERE idcliente = $cliente[idcliente]");
+						$total_cotizaciones = mysql_num_rows($row_cotizaciones);
+						
+					 ?>
+ 					</td>
+ 					<td>
+ 						<a href="?menu=facturas&add_factura&factura_cliente=<?php echo $cliente['idcliente']; ?>" data-toggle="tooltip" title="Agregar Factura">
+ 							<span class="btn btn-xs btn-default glyphicon glyphicon-plus" aria-hidden="true"></span>
+ 						</a>
+					<?php 
+						$row_facturas = mysql_query("SELECT idfactura FROM facturas WHERE idcliente = $cliente[idcliente]");
+						$total_facturas = mysql_num_rows($row_facturas);
+
+					 ?>
+ 					</td>
+
 					<td style="border:hidden;border-left:1px;">
 						<a class="btn btn-sm btn-warning" data-toggle="tooltip" title="Visualizar | Editar" href="?menu=clientes&idcliente=<?php echo $cliente['idcliente']; ?>"><span aria-hidden="true" class="glyphicon glyphicon-search"></span></a>
 					</td>

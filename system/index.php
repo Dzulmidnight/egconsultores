@@ -168,13 +168,13 @@ $(function () {
               <a href="?menu=manuales&listado">Manuales</a>
             </li>
             <li <?php if($menu == "cotizaciones"){ echo 'class="active"';}?>>
-              <a href="?menu=cotizaciones">Cotizaciónes</a>
+              <a href="?menu=cotizaciones&listado">Cotizaciónes</a>
             </li>
             <li <?php if($menu == "facturas"){ echo 'class="active"';}?>>
-              <a href="?menu=facturas">Facturas</a>
+              <a href="?menu=facturas&listado">Facturas</a>
             </li>
             <li <?php if($menu == "servicios"){ echo 'class="active"';}?>>
-              <a href="?menu=servicios">Servicios</a>
+              <a href="?menu=servicios&listado">Servicios</a>
             </li>
             <?php 
             if($row_usuario['clase'] == 'adm'){

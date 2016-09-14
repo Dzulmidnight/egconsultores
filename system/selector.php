@@ -33,7 +33,7 @@ switch ($menu) {
 		include("facturas/facturas.php");
 		break;
 	case 'bitacora':
-		include("bitacora.php");
+		include("bitacora/bitacora.php");
 		break;
 
 

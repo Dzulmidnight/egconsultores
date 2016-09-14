@@ -41,76 +41,46 @@
 	$identificador = "MANUAL";
 	/***** TERMIAN VARIABLES DE BITACORA *****/
 
-	if(isset($_POST['eliminar_manual']) && $_POST['eliminar_manual'] == 1){
-		$idmanual = $_POST['idmanual'];
-		$archivo = $_POST['archivo'];
+	$row_servicios = mysql_query("SELECT servicios.*, usuario.username FROM servicios INNER JOIN usuario ON servicios.idusuario = usuario.idusuario",$eg_system) or die(mysql_error());
+	$total_servicios = mysql_num_rows($row_servicios);
 
-		$insertSQL = sprintf("INSERT INTO bitacora (idusuario, identificador, accion, idmanual, fecha_registro) VALUES (%s, %s, %s, %s, %s)",
-			GetSQLValueString($idusuario, "int"),
-			GetSQLValueString($identificador, "text"),
-			GetSQLValueString($accion, "int"),
-			GetSQLValueString($idmanual, "int"),
-			GetSQLValueString($fecha, "int"));
-		$delete = mysql_query($insertSQL,$eg_system) or die(mysql_error());
-
-		unlink($archivo);
-
-		$deleteSQL = "DELETE FROM manuales WHERE idmanual = $idmanual";
-		$eliminar = mysql_query($deleteSQL,$eg_system) or die(mysql_error());
-
-		$mensaje = "Cliente Eliminado Correctamente";
-	}
-
-	$row_manuales = mysql_query("SELECT * FROM manuales" ,$eg_system) or die(mysql_error());
-	$total = mysql_num_rows($row_manuales);
 
 ?>
-
-
-<h3>Listado de Manuales | Total: <span style="color:#c0392b"><?php echo $total; ?></span></h3>
-
-<?php 
-if(isset($mensaje)){
-?>
-<div class="alert alert-success alert-dismissible" role="alert">
-	<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	<?php echo $mensaje; ?>
-</div>
-<?php
-}
- ?>
-
 <div class="row">
 	<div class="col-md-12">
-		<table class="table table-bordered table-condensed table-hover" style="font-size:12px;">
+		<h3>Listado Servicios (<?php echo "<span style='color:red'>$total_servicios</span>"; ?>)</h3>
+		<table class="table table-bordered table-hover" style="font-size:12px;">
 			<thead>
 				<tr class="info">
 					<th class="text-center">Nº</th>
 					<th class="text-center">Nombre</th>
 					<th class="text-center">Descripción</th>
-					<th class="text-center">Archivo</th>
-					<th class="text-center">Agregado el:</th>
+					<th class="text-center">Costo</th>
+					<th class="text-center">Agredo Por:</th>
+					<th class="text-center">Fecha</th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php 
 				$contador = 1;
-				while($manual = mysql_fetch_assoc($row_manuales)){
+				while($servicios = mysql_fetch_assoc($row_servicios)){
 				?>
 					<tr>
 						<td><?php echo $contador; ?></td>
-						<td><?php echo $manual['nombre']; ?></td>
-						<td><?php echo $manual['descripcion']; ?></td>
-						<td><a class="" href="<?php echo $manual['archivo']; ?>" target="_blank"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Descargar</a></td>
-						<td><?php echo date('d/m/Y', $manual['fecha_registro']); ?></td>
+						<td><?php echo $servicios['nombre']; ?></td>
+						<td><?php echo substr($servicios['descripcion'], 0,200)." ..."; ?></td>
+						<td><?php echo $servicios['costo']; ?></td>
+						<td><?php echo $servicios['username']; ?></td>
+						<td><?php echo date('d/m/Y', $servicios['fecha_registro']); ?></td>
+
 						<td style="border:hidden;border-left:1px;width:40px;">
-							<a class="btn btn-sm btn-warning" data-toggle="tooltip" title="Visualizar | Editar" href="?menu=manuales&idmanual=<?php echo $manual['idmanual']; ?>"><span aria-hidden="true" class="glyphicon glyphicon-search"></span></a>
+							<a class="btn btn-sm btn-warning" data-toggle="tooltip" title="Visualizar | Editar" href="?menu=servicios&idservicio=<?php echo $servicios['idservicio']; ?>"><span aria-hidden="true" class="glyphicon glyphicon-search"></span></a>
 						</td>
 						<form action="" method="POST">
 							<td style="border:hidden;border-left:1px;width:40px;">
 								<button class="btn btn-sm btn-danger" data-toggle="tooltip" title="Eliminar" onclick="return confirm('¿Está seguro ?, los datos se eliminaran permanentemente');"><span aria-hidden="true" class="glyphicon glyphicon-trash"></span></button>
-								<input type="hidden" name="idmanual" value="<?php echo $manual['idmanual']; ?>">
-								<input type="hidden" name="archivo" value="<?php echo $manual['archivo']; ?>">
+								<input type="hidden" name="idservicio" value="<?php echo $servicios['idservicio']; ?>">
+								<input type="hidden" name="archivo" value="<?php echo $servicios['archivo']; ?>">
 								<input type="hidden" name="eliminar_manual" value="1">
 							</td>
 						</form>
@@ -120,7 +90,9 @@ if(isset($mensaje)){
 				$contador++;
 				}
 				 ?>
+				
 			</tbody>
 		</table>
 	</div>
+
 </div>

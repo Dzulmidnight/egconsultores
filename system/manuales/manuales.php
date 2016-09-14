@@ -29,9 +29,9 @@
 		?>
 	
 		<?php 
-		if(isset($_GET['idcliente'])){
+		if(isset($_GET['idmanual'])){
 		?>
-		<a class="btn btn-primary" href="?menu=manuales&idmanual=<?php echo $_GET['idcliente']; ?>">Detalle Manual</a>
+		<a class="btn btn-primary" href="?menu=manuales&idmanual=<?php echo $_GET['idmanual']; ?>">Detalle Manual</a>
 		<?php
 		}
 		 ?>

@@ -206,7 +206,7 @@ if(isset($mensaje)){
 						<td style="border:hidden;border-left:1px;">
 							<a class="btn btn-sm btn-warning" data-toggle="tooltip" title="Visualizar | Editar" href="?menu=usuarios&detalle=<?php echo $usuario['idusuario']; ?>"><span aria-hidden="true" class="glyphicon glyphicon-search"></span></a>
 							<?php 
-							if($tipo_usuario == 'adm'){
+							if($row_usuario['clase'] == 'adm'){
 							?>
 								<button class="btn btn-sm btn-danger" data-toggle="tooltip" title="Eliminar" onclick="return confirm('¿Está seguro ?, los datos se eliminaran permanentemente');"><span aria-hidden="true" class="glyphicon glyphicon-trash"></span></button>
 							<?php
@@ -237,8 +237,8 @@ if(isset($mensaje)){
 				<label for="clase">Clase</label>
 				<select class="form-control" name="clase" id="clase" required>
 					<option value="">...</option>
-					<option value="adm" <?php if($detalle_usuario['clase'] == 'adm'){ echo 'selected'; } ?>>Adm</option>
-					<option value="user" <?php if($detalle_usuario['clase'] == 'user'){ echo 'selected'; } ?>>User</option>
+					<option value="adm" <?php if($detalle_usuario['clase'] == 'adm'){ echo 'selected'; } ?>>ADMINISTRADOR</option>
+					<option value="user" <?php if($detalle_usuario['clase'] == 'user'){ echo 'selected'; } ?>>USUARIO</option>
 				</select>
 
 				<div class="checkbox">
@@ -294,8 +294,8 @@ if(isset($mensaje)){
 				<label for="clase">Clase</label>
 				<select class="form-control" name="clase" id="clase" required>
 					<option value="">...</option>
-					<option value="adm">Adm</option>
-					<option value="user">User</option>
+					<option value="adm">ADMINISTRADOR</option>
+					<option value="user">USUARIO</option>
 				</select>
 					
 				<div class="checkbox">
