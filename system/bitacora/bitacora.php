@@ -112,7 +112,7 @@
 	<div class="col-md-12">
 		<table class="table table-bordered table-hover" style="font-size:12px;">
 			<thead>
-				<tr>
+				<tr class="success">
 					<th>Nº</th>
 					<th>Fecha Registro</th>
 					<th>Usuario</th>
@@ -152,14 +152,16 @@
 							if(empty($bitacora['nombre_manual'])){
 								echo "<span style='color:red'>No Disponible</span>";
 							}else{
-								echo $bitacora['nombre_manual'];
+								echo "MANUAL: <span style='color:red'>".$bitacora['nombre_manual']."</span>";
 							}
 						}else if(isset($bitacora['idfactura'])){
-							echo $bitacora['idfactura'];
+							echo "<a href='?menu=facturas&idfactura=$bitacora[idfactura]'>Consultar Factura";
+							//echo $bitacora['idfactura'];
 						}else if(isset($bitacora['idcotizacion'])){
-							echo $bitacora['idcotizacion'];
+							echo "<a href='?menu=cotizaciones&idcotizacion=$bitacora[idcotizacion]'>Consultar Cotización";
+							//echo $bitacora['idcotizacion'];
 						}else if(isset($bitacora['idservicio'])){
-							echo $bitacora['idservicio'];
+							echo "<a href='?menu=servicios&idservicio=$bitacora[idservicio]'>Consultar Servicio";
 						}else if(isset($bitacora['idformato_cliente'])){
 							echo $bitacora['idformato_cliente'];
 						}else if(isset($bitacora['idcliente'])){

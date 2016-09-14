@@ -160,10 +160,10 @@ if(isset($mensaje)){
 
  <div class="row">
 	<div class="col-md-7">
-		<table class="table table-bordered table-condensed" style="font-size:12px;">
+		<table class="table table-bordered table-condensed" style="font-size:11px;">
 			<thead>
 				<tr class="alert alert-info">
-					<th>ID</th>
+					<!--<th>ID</th>-->
 					<th>Clase</th>
 					<th>Permisos</th>
 					<th>Username</th>
@@ -179,7 +179,7 @@ if(isset($mensaje)){
 					while($usuario = mysql_fetch_assoc($row_usuario2)){
 					?>
 					<tr>
-						<td><?php echo $usuario['idusuario']; ?></td>	
+						<!--<td><?php echo $usuario['idusuario']; ?></td>-->
 						<td><?php echo $usuario['clase']; ?></td>
 						<td>
 							<?php 
@@ -231,7 +231,7 @@ if(isset($mensaje)){
 	$detalle_usuario = mysql_fetch_assoc($consultar);
 	?>
 		<!---- INICIA DETALLE USUARIO ---->
-		<div class="col-md-5 alert alert-success">
+		<div class="col-md-5 alert alert-success" style="font-size:12px;">
 			<h4>Detalle Usuario</h4>
 			<form action="" method="POST">
 				<label for="clase">Clase</label>
@@ -288,7 +288,7 @@ if(isset($mensaje)){
 	}else{
 	?>
 		<!---- INICIA AGREGAR USUARIO ---->
-		<div class="col-md-5">
+		<div class="col-md-5" style="font-size:12px;">
 			<h4>Agregar Usuario</h4>
 			<form action="" method="POST">
 				<label for="clase">Clase</label>

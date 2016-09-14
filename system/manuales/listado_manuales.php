@@ -103,12 +103,26 @@ if(isset($mensaje)){
 						<td><?php echo $manual['descripcion']; ?></td>
 						<td>
 							<?php 
-							if(isset($manual)){
-
+							if(isset($manual['directorio_raiz'])){
+								if(isset($manual['sub_directorio'])){
+								?>
+									<a href="#"><?php echo $manual['directorio_raiz'] ?></a> > <a href="#"><?php echo $manual['sub_directorio'] ?></a> > <a class="" href="<?php echo $manual['archivo']; ?>" target="_blank"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Descargar</a>
+								<?php
+								}else{
+								?>
+									<a href="#"><?php echo $manual['directorio_raiz'] ?></a> > <a class="" href="<?php echo $manual['archivo']; ?>" target="_blank"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Descargar</a>
+								<?php
+								}
+							}else if(isset($manual['sub_directorio'])){
+							?>
+								<a href="#"><?php echo $manual['directorio_raiz'] ?></a> > <a href="#"><?php echo $manual['sub_directorio'] ?></a> > <a class="" href="<?php echo $manual['archivo']; ?>" target="_blank"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Descargar</a>
+							<?php
+							}else{
+							?>
+							<a class="" href="<?php echo $manual['archivo']; ?>" target="_blank"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Descargar</a>
+							<?php
 							}
 							 ?>
-							<a href=""><?php echo $manual['directorio_raiz']; ?></a> ><a href=""><?php echo $manual['sub_directorio']; ?></a> > 
-							<a class="" href="<?php echo $manual['archivo']; ?>" target="_blank"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Descargar</a>
 						</td>
 						<td><?php echo date('d/m/Y', $manual['fecha_registro']); ?></td>
 

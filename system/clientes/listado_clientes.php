@@ -88,7 +88,7 @@ if(isset($mensaje)){
  			<thead>
 				<tr class="alert alert-info">
 					<th class="text-center">Nº</th>
-					<th>ID</th>
+					<!--<th>ID</th>-->
 					<th class="text-center">Empresa</th>
 					<th class="text-center">RFC</th>
 					<th class="text-center hidden-xs">Cont Emp1</th>
@@ -106,14 +106,14 @@ if(isset($mensaje)){
  				?>
  				<tr>
  					<td class="info"><?php echo $contador; ?></td>
- 					<td><?php echo $cliente['idcliente']; ?></td>
+ 					<!--<td><?php echo $cliente['idcliente']; ?></td>-->
  					<td><?php echo $cliente['empresa']; ?></td>
  					<td><?php echo $cliente['rfc']; ?></td>
  					<td><?php echo $cliente['cont_emp1']; ?></td>
  					<td><?php echo $cliente['telefono']; ?></td>
  					<td><?php echo $cliente['colonia']; ?></td>
  					<td><?php echo $cliente['ciudad']; ?></td>
- 					<td>
+ 					<td class="text-center">
  						<a href="?menu=cotizaciones&add_cotizacion&cliente=<?php echo $cliente['idcliente']; ?>" data-toggle="tooltip" title="Agregar Cotización">
  							<span class="btn btn-xs btn-default glyphicon glyphicon-plus" aria-hidden="true"></span>
  						</a>
@@ -123,7 +123,7 @@ if(isset($mensaje)){
 						
 					 ?>
  					</td>
- 					<td>
+ 					<td class="text-center">
  						<a href="?menu=facturas&add_factura&factura_cliente=<?php echo $cliente['idcliente']; ?>" data-toggle="tooltip" title="Agregar Factura">
  							<span class="btn btn-xs btn-default glyphicon glyphicon-plus" aria-hidden="true"></span>
  						</a>

@@ -86,7 +86,7 @@
 
 	}
 
-	$row_facturas = mysql_query("SELECT * FROM facturas", $eg_system) or die(mysql_error());
+	$row_facturas = mysql_query("SELECT facturas.*, cliente.empresa, servicios.nombre AS 'nombre_servicio', usuario.username FROM facturas LEFT JOIN cliente ON facturas.idcliente = cliente.idcliente LEFT JOIN servicios ON facturas.idservicio = servicios.idservicio LEFT JOIN usuario ON facturas.responsable = usuario.idusuario", $eg_system) or die(mysql_error());
 	$total_facturas = mysql_num_rows($row_facturas);
 
 
@@ -105,7 +105,7 @@ if(isset($mensaje)){
 }
  ?>
 
-		<table class="table table-bordered table-hover" style="font-size:12px;">
+		<table class="table table-condensed table-bordered table-hover" style="font-size:12px;">
 			<thead>
 				<tr class="info">
 					<th class="text-center">Nº</th>
@@ -126,12 +126,12 @@ if(isset($mensaje)){
 				?>
 					<tr>
 						<td><?php echo $contador; ?></td>
-						<td><?php echo $facturas['idcliente']; ?></td>
-						<td><?php echo $facturas['idcotizacion']; ?></td>
-						<td><?php echo $facturas['idservicio']; ?></td>
+						<td><?php echo $facturas['empresa']; ?></td>
+						<td><a href="?menu=cotizaciones&idcotizacion=<?php echo $facturas['idcotizacion']; ?>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>Consultar</a></td>
+						<td><a href="?menu=servicios&idservicio=<?php echo $facturas['idservicio']; ?>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> <?php echo $facturas['nombre_servicio']; ?></a></td>
 						<td><a href="<?php echo $facturas['xml']; ?>" target="_blank"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Descargar</a></td>
 						<td><a href="<?php echo $facturas['pdf']; ?>" target="_blank"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Descargar</a></td>
-						<td><?php echo $facturas['responsable']; ?></td>
+						<td><?php echo $facturas['username']; ?></td>
 						<td>
 							<?php
 							if($facturas['estatus_factura'] == "POR PAGAR"){
@@ -141,7 +141,7 @@ if(isset($mensaje)){
 								<?php echo "<b class='alert alert-info' style='padding:7px;'>".$facturas['estatus_factura']."</b>"; ?>
 								<button class="btn btn-sm btn-success" type="submit" name="estatus_factura" data-toggle="tooltip" title="PAGADO" value="PAGADO"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
 								<button class="btn btn-sm btn-danger" type="submit" name="estatus_factura" data-toggle="tooltip" title="CANCELADO" value="CANCELADO"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-								<input type="text" name="idfactura" value="<?php echo $facturas['idfactura']; ?>">
+								<input type="hidden" name="idfactura" value="<?php echo $facturas['idfactura']; ?>">
 
 							</form>
 							<?php

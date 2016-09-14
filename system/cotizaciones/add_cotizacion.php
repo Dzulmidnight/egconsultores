@@ -61,7 +61,7 @@
 			GetSQLValueString($fecha, "int"));
 		$insertar = mysql_query($insertSQL, $eg_system) or die(mysql_error());
 
-		$mensaje = "Cotización Agregado Correctamente";
+		$mensaje = "Cotización Agregada Correctamente";
 	}
 	if(isset($_GET['cliente'])){
 		$cliente_factura = $_GET['cliente'];
