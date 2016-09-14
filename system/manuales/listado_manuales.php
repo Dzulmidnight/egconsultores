@@ -101,8 +101,17 @@ if(isset($mensaje)){
 						<td><?php echo $contador; ?></td>
 						<td><?php echo $manual['nombre']; ?></td>
 						<td><?php echo $manual['descripcion']; ?></td>
-						<td><a class="" href="<?php echo $manual['archivo']; ?>" target="_blank"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Descargar</a></td>
+						<td>
+							<?php 
+							if(isset($manual)){
+
+							}
+							 ?>
+							<a href=""><?php echo $manual['directorio_raiz']; ?></a> ><a href=""><?php echo $manual['sub_directorio']; ?></a> > 
+							<a class="" href="<?php echo $manual['archivo']; ?>" target="_blank"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Descargar</a>
+						</td>
 						<td><?php echo date('d/m/Y', $manual['fecha_registro']); ?></td>
+
 						<td style="border:hidden;border-left:1px;width:40px;">
 							<a class="btn btn-sm btn-warning" data-toggle="tooltip" title="Visualizar | Editar" href="?menu=manuales&idmanual=<?php echo $manual['idmanual']; ?>"><span aria-hidden="true" class="glyphicon glyphicon-search"></span></a>
 						</td>
